@@ -4,13 +4,12 @@ price_list_101 = [20, 28, 43, 50, 58, 68, 84, 125, 144, 186, 298, 432]
 
 
 def metal_params():
-    global metal_cost
-    length = int(input('Длинна мм = '))
-    width = int(input('Ширина мм = '))
     global t
     t = int(input('Толщина мм = '))
     number_of_pieces = int(input('Кол-во деталей шт = '))
     global metal_cost
+    length = int(input('Длинна мм = '))
+    width = int(input('Ширина мм = '))
     metal_cost = length * width * t * number_of_pieces * 0.0000078 * 350
     return (
      f'Площадь металла: {(length* width *0.000001)*number_of_pieces} м^2\n'
