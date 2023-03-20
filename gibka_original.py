@@ -54,7 +54,7 @@ def cost_out():
     metal = metal_params()
     # 57с проблема. Не понимаю как оригинальная программа
     # схавала конкатенация стрроки и числа на 59с.
-    cutting = int(cutting_cost())
+    cutting = cutting_cost()
     insert = insert_cost()
     bending = bending_cost()
     our_metal = metal_cost + cutting + insert_money + bending_money

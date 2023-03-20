@@ -1,7 +1,7 @@
 # А если здесь соответствия между этими переменными? ->
 # Есть. Словарь может отразить эти соответствия. ->
 # Создаем словарь соответсвия толщины к вариантам стоимости.
-
+c = 0.0000078  # надо как-то текст помещать в поле, полное имя 'constant'
 thicknesses = {
     1: {'cost_less': 27, 'cost_more': 20},
     2: {'cost_less': 36, 'cost_more': 28},
@@ -18,21 +18,32 @@ thicknesses = {
 }
 
 
-def metal_params():
-    global cutting_length
-    cutting_length = int(input('Длинна резки (м/п) = '))
-    global t
-    thickness = int(input('Толщина (мм) = '))
-    global metal_cost
-    length = int(input('Длинна (мм) = '))
-    width = int(input('Ширина (мм) = '))
+def info_research():
+    info_list = []
+    # global cutting_length
+    cutting_length = info_list.append(int(input('Длинна резки (м/п) = ')))
+    inserts_money = info_list.append(int(input('Кол-во вставок шт = ')))
+    # global thickness
+    thickness = info_list.append(int(input('Толщина (мм) = ')))
+    # global metal_cost
+    length = info_list.append(int(input('Длинна (мм) = ')))
+    width = info_list.append(int(input('Ширина (мм) = ')))
+    number_of_pieces = info_list.append(int(input('Кол-во деталей (шт.) = ')))
+    info_list.append(f'Площадь металла:{(info_list[3] * info_list[4] *0.000001) * info_list[5]} (м^2)')
+    info_list.append(f'Масса маталла:{info_list[3] * info_list[4] * info_list[4] * info_list[5] * c}(кг)')
+    info_list.append(f'Стоимость металла: {metal_cost} (руб)')
+    return info_list
+
+
+def metal_cost(length, width, thikness, number_of_pieces):
+    thickness = info_list.append(int(input('Толщина (мм) = ')))
+    # global metal_cost
+    meatal_price = 0
+    length = info_list[3]
+    width = info_list[4]
     number_of_pieces = int(input('Кол-во деталей (шт.) = '))
-    metal_cost = length * width * thickness * number_of_pieces * 0.0000078 * 350
-    return (
-     f'Площадь металла:{(length* width *0.000001)*number_of_pieces} (м^2)\n'
-     f'Масса маталла:{length * width * thickness * number_of_pieces * 0.0000078}(кг)\n'
-     f'Стоимость металла: {metal_cost} (руб)'
-    )
+    metal_price = length * width * thickness * number_of_pieces * c * 350
+    return metal_price
 
 
 def cutting_cost(thickness: int, cutting_length: int) -> int:
@@ -48,7 +59,7 @@ def cutting_cost(thickness: int, cutting_length: int) -> int:
 def insert_cost():
     global insert_money
     insert_money = int(input('Кол-во вставок шт = ')) * 10
-    return f'Стоимость вставок: {insert_money} рублей'
+    return insert_money
 
 
 def bending_cost():
@@ -63,17 +74,23 @@ def bending_cost():
 
 
 def cost_out():
+    insert_cost()
     metal = metal_params()
-    cutting = cutting_cost(t, cutting_length)
-    insert = insert_cost()
+    cutting = cutting_cost(thickness, cutting_length)
     bending = bending_cost()
-    our_metal = metal_cost + cutting + insert_money + bending_money
     not_our_metal = cutting + insert_money + bending_money
-    print(f'{metal}\n{cutting}\n{insert}\n{bending}')
+    our_metal = metal_cost + not_our_metal
+    print(
+        f'{metal}\n'
+        f'Стоимость реза: {cutting_cost(thickness, cutting_length)}руб.\n'
+        f'Стоимость вставок: {insert_money} рублей\n'
+        f'{bending}'
+    )
     print(f'Если металл наш:{our_metal} \nЕсли метал НЕ наш: {not_our_metal}')
 
 
 # cost_out()
-print(cutting_cost(2, 1))
-print(cutting_cost(12, 110))
-print(thicknesses[8])
+# print(cutting_cost(20, 48))
+# print(cutting_cost(12, 1450))
+info_research()
+metal_cost()
