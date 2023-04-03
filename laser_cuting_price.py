@@ -31,13 +31,9 @@ def input_data_research():
         'length': int(input('Длинна (мм) = ')),
         'width': int(input('Ширина (мм) = ')),
         'amount_of_inserts': int(input('Кол-во вставок шт = ')),
-        'metal_V': 0,
-        'metal_S': 0,
         'number_of_pieces': int(input('Кол-во деталей (шт.) = ')),
         'bending_count': int(input('Кол-во гибов шт = '))
     }
-    info_list['metal_V'] = info_list['length'] * info_list['width'] * info_list['thickness']
-    info_list['metal_S'] = info_list['length'] * info_list['width']
     return info_list
 
 
@@ -80,19 +76,27 @@ def bending_price(bending_count: int):
     return bending_money
 
 
-def main():
-    input_data = input_data_research()
-    metal_square = input_data['metal_S'] * MN_0
-    metal_mass = input_data['metal_V'] * input_data['number_of_pieces'] * MN_1
+def generate_customer_invoice(input_data):
+    metal_V = (
+        input_data['length'] * input_data['width'] * input_data['thickness']
+    )
+    metal_S = input_data['length'] * input_data['width']
+    metal_square = metal_S * MN_0
+    metal_mass = metal_V * input_data['number_of_pieces'] * MN_1
     metal_final_price = metal_mass * MN_2
     cuting_final_price = cutting_price(
         input_data['thickness'],
         input_data['cutting_length'],
         min_cut_price,
         min_cut_length
-        )
+    )
     insert_final_price = insert_price(input_data['amount_of_inserts'])
     bending_final_price = bending_price(input_data['bending_count'])
+    not_our_metal = (
+        cuting_final_price + insert_final_price + bending_final_price
+    )
+    our_metal = metal_final_price + not_our_metal
+
     invoice = {
         'metal_space': metal_square,
         'metal_mass': metal_mass,
@@ -100,26 +104,28 @@ def main():
         'cuting_final_price': cuting_final_price,
         'insert_final_price': insert_final_price,
         'bending_final_price': bending_final_price,
-
+        'not_our_metal': not_our_metal,
+        'our_metal': our_metal
     }
     # счёт фактуры
     return invoice
 
 
-def invoice_visual():
-    customer_invoice = main()
-    # этих бы тоже в main(перенести)
-    not_our_metal = customer_invoice['cuting_final_price'] + customer_invoice['insert_final_price'] + customer_invoice['bending_final_price']
-    our_metal = customer_invoice['metal_final_price'] + not_our_metal
+def invoice_visual(customer_invoice):
     print('X' * 10)
     print(f"Площадь металла: {customer_invoice['metal_space']}")
     print(f"Масса металла: {customer_invoice['metal_mass']}")
     print(f"Стоимость металла: {customer_invoice['metal_final_price']}")
-    print(f"Стоимость лазерной резки: {customer_invoice['cuting_final_price']}")
+    print(
+        f"Стоимость лазерной резки: {customer_invoice['cuting_final_price']}")
     print(f"Стоимость вставок: {customer_invoice['insert_final_price']}")
     print(f"Стоимость гибки: {customer_invoice['bending_final_price']}")
-    print(f"Если мтеалл наш: {our_metal}")
-    print(f"Если мтеалл НЕ наш: {not_our_metal}")
+    print(f"Если мтеалл наш: {customer_invoice['our_metal']}")
+    print(f"Если мтеалл НЕ наш: {customer_invoice['not_our_metal']}")
 
 
-invoice_visual()
+def main():
+    invoice_visual(generate_customer_invoice(input_data_research()))
+
+
+main()
